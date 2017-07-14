@@ -1,5 +1,5 @@
 /*
-A strategy needs to export a function that takes in current holdings and a week of coin data, 
+A strategy needs to export a function that takes in spending settings, current holdings and a week of coin data, 
 and returns the updated holdings object.
 
 Example of holdings object:
@@ -12,14 +12,11 @@ holdings = {
 }
 */
 
-
-let weeklySpend = 100;
-let numCoins = 50;
-let perCoin = weeklySpend / numCoins;
-
 let bitcoinPrice;
 
-function buyCoin(holdings,coin){
+function buyCoin({ weeklySpend, numCoins }, holdings, coin) {
+	let perCoin = weeklySpend / numCoins;
+
 	if (coin.name.toLowerCase() == 'bitcoin'){
 		bitcoinPrice = coin.priceUSD;
 	}
@@ -42,11 +39,11 @@ function buyCoin(holdings,coin){
 	return holdings;
 }
 
-module.exports = function(holdings, coinData){
-	coinData = coinData.slice(0, numCoins);
+module.exports = function(spendingSettings, holdings, coinData){
+	coinData = coinData.slice(0, spendingSettings.numCoins);
 
 	coinData.forEach( coin => {
-		holdings = buyCoin(holdings, coin);
+		holdings = buyCoin(spendingSettings, holdings, coin);
 	});
 
 	return holdings;

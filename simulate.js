@@ -3,6 +3,7 @@
 const program = require('commander');
 const moment = require('moment');
 
+const strategy = require('./strategy');
 const data = require('./data/snapshots.json');
 const dateFormat = 'YYYY-MM-DD';
 
@@ -13,12 +14,15 @@ program
 	.version('0.1.0')
 	.option('-b, --begin [date]', 'Start date (YYYY-MM-DD)')
 	.option('-e, --end [date]', 'End date(YYYY-MM-DD)')
-	.option('-s, --strategy [name]', 'Strategy to use')
+	.option('-w, --weeklySpend [amount]', 'Amount to spend weekly')
+	.option('-n, --numCoins [count]', 'Number of coins to buy')
 	.parse(process.argv);
 
 let startDate = (program.begin) ? moment(program.begin, dateFormat) : moment('20140101', dateFormat);
 let endDate = (program.end) ? moment(program.end, dateFormat) : moment();
-let strategy = (program.strategy) ? require('./strategies/' + program.strategy) : require('./strategies/top50');
+let weeklySpend = program.weeklySpend || 100;
+let numCoins = program.numCoins || 50;
+let spendingSettings = { weeklySpend, numCoins };
 
 function showResults(holdings){
 	let spent = 0;
@@ -36,6 +40,7 @@ function showResults(holdings){
 	growth = profit / spent * 100;
 
 	console.log('');
+	console.log(`Strategy: spend $${weeklySpend.toLocaleString()} weekly on top ${numCoins} coins`)
 	console.log('Spent: $' + spent.toLocaleString());
 	console.log('Value: $' + value.toLocaleString());
 	console.log('Profit: $' + profit.toLocaleString());
@@ -46,7 +51,7 @@ data.forEach(week => {
 	if (moment(week.date, dateFormat).isAfter(startDate) && moment(week.date, dateFormat).isBefore(endDate)) {
 		console.log('');
 		console.log('Week of ' + week.date);
-		holdings = strategy(holdings, week.coins);
+		holdings = strategy(spendingSettings, holdings, week.coins);
 	}
 });
 

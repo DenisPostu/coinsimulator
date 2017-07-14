@@ -7,8 +7,7 @@ At the end of the run, it tells you the value of your holdings.
 **Requires Node.js.**
 
 ## Default Strategy
-Buys the top 50 coins, by market cap, spending a total of $100 each week.  To change the number of coins or the amount spend, 
-edit `strategies/top50.js` or create your own strategy and call it via the `-s` option below.
+By default buys the top 50 coins, by market cap, spending a total of $100 each week. To change the number of coins or the amount spend, pass use the command line arguments.
 
 ## Install
 ```
@@ -23,16 +22,18 @@ node simulate
 ## Options
 ```
 -b, --begin [date] - Start date (YYYY-MM-DD)
--e, --end [date]  - End date(YYYY-MM-DD)
--s, --strategy [name] - Strategy to use // Defaults to top50
+-e, --end [date] - End date(YYYY-MM-DD)
+-w, --weeklySpend [amount] - Amount to spend on a weekly basis
+-n, --numCoins [count] - Number of coins to buy
 ```
 ## Sample output
 (runs from June 1, 2016 till present):
 ```
-node simulate.js -b 2016-06-01
+node simulate.js -b 2016-06-01 -w 20 -n 50
 ...
-Spent: $5,500
-Value: $75,846.427
-Profit: $70,346.427
+Strategy: spend $20 weekly on top 50 coins
+Spent: $1,100
+Value: $15,169.285
+Profit: $14,069.285
 Growth: 1279.03%
 ```
